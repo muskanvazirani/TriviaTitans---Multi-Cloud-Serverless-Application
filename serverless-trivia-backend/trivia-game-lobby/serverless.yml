@@ -10,7 +10,7 @@ provider:
 
 functions:
   hello:
-    handler: handler/handler.hello
+    handler: handlers/handler.hello
     events:
       - http:
           path: hello-world
