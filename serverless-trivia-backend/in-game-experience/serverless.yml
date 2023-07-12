@@ -1,0 +1,19 @@
+
+service: in-game-experience
+frameworkVersion: "3"
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hello:
+    handler: handlers/index.hello
+    events:
+      - http:
+          path: hello-world
+          method: get
+          cors: true
