@@ -6,6 +6,15 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'sns:*'
+        - 'sqs:*'
+      Resource: '*'
+  role: arn:aws:iam::<account-id>:role/LabRole
 
 functions:
   hello:
