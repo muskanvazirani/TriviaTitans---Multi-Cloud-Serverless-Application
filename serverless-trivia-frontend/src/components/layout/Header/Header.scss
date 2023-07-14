@@ -1,0 +1,16 @@
+$header-bg: #00aaff;
+$header-color: #333;
+
+.header {
+  background-color: $header-bg;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-title {
+  color: $header-color;
+  font-size: 18px;
+  font-weight: bold;
+}
