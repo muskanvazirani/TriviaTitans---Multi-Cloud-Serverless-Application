@@ -6,6 +6,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
+<<<<<<< Updated upstream
   region: us-east-1
   stage: dev
   iamRoleStatements:
@@ -15,6 +16,92 @@ provider:
         - 'sqs:*'
       Resource: '*'
   role: arn:aws:iam::<account-id>:role/LabRole
+=======
+  stage: dev
+  region: us-east-1
+  environment:
+    CATEGORIES_TABLE: ${self:service}-${self:provider.stage}-categories
+    QUESTIONS_TABLE: ${self:service}-${self:provider.stage}-questions
+    GAMES_TABLE: ${self:service}-${self:provider.stage}-games
+    GAMEQUESTIONS_TABLE: ${self:service}-${self:provider.stage}-gamequestions
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+      Resource:
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-categories"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-gamequestions"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-games"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-questions"
+
+resources:
+  Resources:
+    CategoriesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: category
+            AttributeType: S
+        KeySchema:
+          - AttributeName: category
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+    QuestionsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: N
+          - AttributeName: category
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: category
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.QUESTIONS_TABLE}
+    GamesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: game_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: game_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.GAMES_TABLE}
+    GameQuestionsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: game_id
+            AttributeType: S
+          - AttributeName: question_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: game_id
+            KeyType: HASH
+          - AttributeName: question_id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.GAMEQUESTIONS_TABLE}
+>>>>>>> Stashed changes
 
 functions:
   hello:
@@ -24,3 +111,80 @@ functions:
           path: hello-world
           method: get
           cors: true
+  # Categories API handlers
+  getAllCategories:
+    handler: handlers/categoriesHandler.getAllCategories
+    events:
+      - http:
+          path: categories
+          method: get
+  createCategory:
+    handler: handlers/categoriesHandler.createCategory
+    events:
+      - http:
+          path: categories
+          method: post
+  updateCategory:
+    handler: handlers/categoriesHandler.updateCategory
+    events:
+      - http:
+          path: categories
+          method: put
+  deleteCategory:
+    handler: handlers/categoriesHandler.deleteCategory
+    events:
+      - http:
+          path: categories
+          method: delete
+
+  # Questions API handlers
+  getCategoryQuestions:
+    handler: handlers/questionsHandler.getCategoryQuestions
+    events:
+      - http:
+          path: categories/{category}
+          method: get
+  createQuestion:
+    handler: handlers/questionsHandler.createQuestion
+    events:
+      - http:
+          path: questions
+          method: post
+  updateQuestion:
+    handler: handlers/questionsHandler.updateQuestion
+    events:
+      - http:
+          path: questions
+          method: put
+  deleteQuestion:
+    handler: handlers/questionsHandler.deleteQuestion
+    events:
+      - http:
+          path: questions
+          method: delete
+
+  # Games API handlers -
+  createGame:
+    handler: handlers/gamesHandler.createGame
+    events:
+      - http:
+          path: games
+          method: post
+  getGameDetails:
+    handler: handlers/gamesHandler.getGameDetails
+    events:
+      - http:
+          path: games
+          method: get
+  updateGame:
+    handler: handlers/gamesHandler.updateGame
+    events:
+      - http:
+          path: games
+          method: put
+  deleteGame:
+    handler: handlers/gamesHandler.deleteGame
+    events:
+      - http:
+          path: games
+          method: delete
