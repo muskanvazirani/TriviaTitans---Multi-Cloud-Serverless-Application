@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
  
 const firebaseConfig = {
   apiKey: "AIzaSyBmj8EazZwuJHAG68fO5SiguRyUOTptNUg",
@@ -13,3 +13,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
+export const signInWithGoogle = () => {
+  signInWithPopup(auth, provider).then((result) => {
+    console.log('result', result);
+  }).catch((error) => console.log(error));
+}

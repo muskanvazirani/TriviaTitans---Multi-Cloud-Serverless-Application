@@ -2,20 +2,28 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 
 function LoginRegister({ type = 'LOGIN' }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const register = async () => {
+  const authentication = async () => {
+    let user;
     try {
-        const user = await createUserWithEmailAndPassword(auth, email, password);   
+        if(type === 'LOGIN') {
+            user = await signInWithEmailAndPassword(auth, email, password)
+         } else {
+            user = await createUserWithEmailAndPassword(auth, email, password);   
+         }   
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
-  };
+
+    console.log('userr', user);
+  }
+
 
   return (
     <Box
@@ -50,7 +58,7 @@ function LoginRegister({ type = 'LOGIN' }) {
           width: "20%",
           backgroundColor: "rgb(4, 59, 114)",
         }}
-        onClick={register}
+        onClick={authentication}
       >
         {type}
       </Button>
