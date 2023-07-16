@@ -1,5 +1,5 @@
-$sidebar-bg: #00aaff;
-$sidebar-color: #333;
+$sidebar-bg: rgb(4, 59, 114);
+$sidebar-color: rgb(255, 255, 255);
 $border-color: #ccc;
 
 .sidebar {
@@ -11,6 +11,7 @@ $border-color: #ccc;
   top: 0;
   left: 0;
   border-right: 1px solid $border-color;
+  
 }
 
 .sidebar__list {
