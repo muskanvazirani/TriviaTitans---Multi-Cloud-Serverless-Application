@@ -19,6 +19,7 @@ provider:
   role: arn:aws:iam::694195453932:role/LabRole
   environment:
     USER_TABLE: ${self:service}-${self:provider.stage}-users
+    USER_QUS_ANS_TABLE: ${self:service}-${self:provider.stage}-users-two-factor-question-answer
 
 functions:
   add-user:
@@ -28,6 +29,29 @@ functions:
       - http:
           path: user
           method: post
+          cors:
+            origin: '*'
+  add-user-que-ans:
+    handler: handlers/add-user-answers.handler
+    description: POST /user-answers
+    events:
+      - http:
+          path: user-answers
+          method: post
+          cors:
+            origin: '*'
+  get-user-que-ans:
+    handler: handlers/get-user-answers.handler
+    description: Get /user-answers
+    events:
+      - http:
+          path: user-answers
+          method: get
+          request:
+            parameters:
+              querystrings:
+                email: true
+                user_id: true
           cors:
             origin: '*'
 
@@ -43,6 +67,23 @@ resources:
         KeySchema:
           - AttributeName: user_id
             KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    userTwoFactorQuestionAnswers:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USER_QUS_ANS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+          - AttributeName: email
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
