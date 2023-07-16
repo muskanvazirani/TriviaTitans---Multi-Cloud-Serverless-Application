@@ -14,14 +14,35 @@ provider:
       Action:
         - 'sns:*'
         - 'sqs:*'
+        - 'dynamodb:*' 
       Resource: '*'
-  role: arn:aws:iam::<account-id>:role/LabRole
+  role: arn:aws:iam::694195453932:role/LabRole
+  environment:
+    USER_TABLE: ${self:service}-${self:provider.stage}-users
 
 functions:
-  hello:
-    handler: handlers/handler.hello
+  add-user:
+    handler: handlers/add-user.handler
+    description: POST /user
     events:
       - http:
-          path: hello-world
-          method: get
-          cors: true
+          path: user
+          method: post
+          cors:
+            origin: '*'
+
+resources:
+  Resources:
+    UserTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.USER_TABLE}
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
