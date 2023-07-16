@@ -54,11 +54,21 @@ functions:
                 user_id: true
           cors:
             origin: '*'
+  validate-user-que-ans:
+    handler: handlers/validate-auth-answers.handler
+    description: validate /user-answers
+    events:
+      - http:
+          path: validate-auth-answers
+          method: post
+          cors:
+            origin: '*'
 
 resources:
   Resources:
     UserTable:
       Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
       Properties:
         TableName: ${self:provider.environment.USER_TABLE}
         AttributeDefinitions:
@@ -72,18 +82,15 @@ resources:
           WriteCapacityUnits: 1
     userTwoFactorQuestionAnswers:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
       Properties:
         TableName: ${self:provider.environment.USER_QUS_ANS_TABLE}
         AttributeDefinitions:
-          - AttributeName: user_id
-            AttributeType: S
           - AttributeName: email
             AttributeType: S
         KeySchema:
-          - AttributeName: user_id
-            KeyType: HASH
           - AttributeName: email
-            KeyType: RANGE
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
