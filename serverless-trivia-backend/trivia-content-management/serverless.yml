@@ -6,17 +6,15 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
-<<<<<<< Updated upstream
-  region: us-east-1
-  stage: dev
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - 'sns:*'
-        - 'sqs:*'
-      Resource: '*'
-  role: arn:aws:iam::<account-id>:role/LabRole
-=======
+  # region: us-east-1
+  # stage: dev
+  # iamRoleStatements:
+  #   - Effect: 'Allow'
+  #     Action:
+  #       - 'sns:*'
+  #       - 'sqs:*'
+  #     Resource: '*'
+  # role: arn:aws:iam::<account-id>:role/LabRole
   stage: dev
   region: us-east-1
   environment:
@@ -33,11 +31,15 @@ provider:
         - "dynamodb:DeleteItem"
         - "dynamodb:Query"
         - "dynamodb:Scan"
+        - "sns:*"
+        - "sqs:*"
       Resource:
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-categories"
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-gamequestions"
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-games"
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-questions"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/UsersTable"
+        - "*"
 
 resources:
   Resources:
@@ -63,9 +65,9 @@ resources:
           - AttributeName: category
             AttributeType: S
         KeySchema:
-          - AttributeName: id
-            KeyType: HASH
           - AttributeName: category
+            KeyType: HASH
+          - AttributeName: id
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -101,7 +103,6 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.GAMEQUESTIONS_TABLE}
->>>>>>> Stashed changes
 
 functions:
   hello:
@@ -118,24 +119,28 @@ functions:
       - http:
           path: categories
           method: get
+          cors: true
   createCategory:
     handler: handlers/categoriesHandler.createCategory
     events:
       - http:
           path: categories
           method: post
+          cors: true
   updateCategory:
     handler: handlers/categoriesHandler.updateCategory
     events:
       - http:
           path: categories
           method: put
+          cors: true
   deleteCategory:
     handler: handlers/categoriesHandler.deleteCategory
     events:
       - http:
           path: categories
           method: delete
+          cors: true
 
   # Questions API handlers
   getCategoryQuestions:
@@ -144,24 +149,28 @@ functions:
       - http:
           path: categories/{category}
           method: get
+          cors: true
   createQuestion:
     handler: handlers/questionsHandler.createQuestion
     events:
       - http:
           path: questions
           method: post
+          cors: true
   updateQuestion:
     handler: handlers/questionsHandler.updateQuestion
     events:
       - http:
           path: questions
           method: put
+          cors: true
   deleteQuestion:
     handler: handlers/questionsHandler.deleteQuestion
     events:
       - http:
           path: questions
           method: delete
+          cors: true
 
   # Games API handlers -
   createGame:
@@ -170,21 +179,56 @@ functions:
       - http:
           path: games
           method: post
+          cors: true
   getGameDetails:
     handler: handlers/gamesHandler.getGameDetails
     events:
       - http:
           path: games
           method: get
+          cors: true
   updateGame:
     handler: handlers/gamesHandler.updateGame
     events:
       - http:
           path: games
           method: put
+          cors: true
   deleteGame:
     handler: handlers/gamesHandler.deleteGame
     events:
       - http:
           path: games
           method: delete
+          cors: true
+  notifyUsers:
+    handler: handlers/notifyUsers.handler
+    events:
+      - sns:
+          arn:
+            Fn::Join:
+              - ""
+              - - "arn:aws:sns:"
+                - Ref: "AWS::Region"
+                - ":"
+                - Ref: "AWS::AccountId"
+                - ":New-Game-Update"
+          topicName: New-Game-Update
+  getQuesByCatAndDiff:
+    handler: handlers/gamesHandler.getQuesByCatAndDiff
+    events:
+      - http:
+          path: questions/{category}/{difficulty}
+          method: get
+          cors: true
+  getGameDetailsByGameName:
+    handler: handlers/gamesHandler.getGameDetailsByGameName
+    events:
+      - http:
+          path: games/{game_name}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                game_name: true
