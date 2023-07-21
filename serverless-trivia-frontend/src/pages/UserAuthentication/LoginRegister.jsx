@@ -66,6 +66,7 @@ function LoginRegister({ type = "LOGIN" }) {
         answer3,
       });
     }
+    sessionStorage.setItem("user-details", JSON.stringify({userName, email}))
     // login successful: go to next page
     navigate("/in-game-experience");
   };
