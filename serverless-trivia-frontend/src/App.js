@@ -7,6 +7,8 @@ import CreateTeam from "./pages/TeamManagement/CreateTeam";
 import InviteUser from "./pages/TeamManagement/InviteUser";
 import TeamActionForm from "./pages/TeamManagement/TeamAction";
 import TeamStats from "./pages/TeamManagement/TeamStats";
+import GameList from "./pages/TriviaGameLobby/GameList";
+import GameDetailsPopup from "./pages/TriviaGameLobby/GameDetailsPopup";
 
 
 function App() {
@@ -21,6 +23,9 @@ function App() {
             <Route path="/teamAction" element={<TeamActionForm />} />
             <Route path="/teamStats" element={<TeamStats />} />
             <Route path="/inviteUser" element={<InviteUser />} />
+            
+            <Route path="/gamelist" element={ <GameList /> } />
+            <Route path="/gamedetails" element={ <GameDetailsPopup /> } />
           </Routes>
         </Layout>
       </BrowserRouter>
