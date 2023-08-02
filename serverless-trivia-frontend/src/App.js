@@ -9,6 +9,8 @@ import TeamActionForm from "./pages/TeamManagement/TeamAction";
 import TeamStats from "./pages/TeamManagement/TeamStats";
 import GameList from "./pages/TriviaGameLobby/GameList";
 import GameDetailsPopup from "./pages/TriviaGameLobby/GameDetailsPopup";
+import LeaderBoard from "./pages/LeaderBoard/LeaderBoard";
+import LookerData from "./pages/LeaderBoard/LookerData";
 
 
 function App() {
@@ -26,6 +28,10 @@ function App() {
             
             <Route path="/gamelist" element={ <GameList /> } />
             <Route path="/gamedetails" element={ <GameDetailsPopup /> } />
+            <Route path="/leaderboard" element={ <LeaderBoard /> } />
+            <Route path="/lookerdata" element={ <LookerData /> } />
+
+
           </Routes>
         </Layout>
       </BrowserRouter>

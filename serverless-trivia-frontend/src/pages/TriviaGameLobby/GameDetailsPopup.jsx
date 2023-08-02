@@ -20,7 +20,7 @@ function GameDetailsPopup() {
     const activeGame = location.state?.game;
 
     const gameIdVal = activeGame.game_id;
-console.log("------", gameIdVal);
+console.log("------", activeGame);
   const [game, setGame] = useState(null);
 
   const { id } = useParams();
@@ -29,7 +29,7 @@ console.log("------", gameIdVal);
     const fetchData = async () => {
 
       const dataVal={
-        "gameId": activeGame.game_id
+        "gameId": gameIdVal + ""
         }
 
     const requestPayload = {
@@ -40,6 +40,7 @@ console.log("------", gameIdVal);
 
       try {
           const response = await axios.post('https://u0ubbqcm00.execute-api.us-east-1.amazonaws.com/Dev/paticipants', dataVal);
+          console.log("-----------Success--------------------")
           console.log(response.data.value?.length);
           setParticipants(response.data.value?.length);
 
@@ -87,14 +88,14 @@ console.log("------", gameIdVal);
 
   const handleJoin = async (game) => {
 
-    const {email} = JSON.parse(window.sesssionStorage.getItem("user-details"));
+    //const {email} = JSON.parse(window.sesssionStorage.getItem("user-details"));
     // Check if user details exist in session storage
    
     console.log(gameIdVal);
     console.log("------------");
     const dataVal={
-      "GameId": gameIdVal,
-      "EmailId":email,
+      "GameId": gameIdVal + "",
+      "EmailId":'nh@gmail.com',
       "JoinTime":new Date()
       }
 
@@ -103,9 +104,12 @@ console.log("------", gameIdVal);
       body: JSON.stringify(dataVal) // Convert the data object to a JSON string
     };
 
+    console.log("------- request");
     console.log(requestPayload);
     try {
       const response = await axios.post('https://u0ubbqcm00.execute-api.us-east-1.amazonaws.com/Dev/joinedgames', requestPayload);
+      console.log("-----response -----");
+
       console.log(response);
       console.log(response.data.value);
       
@@ -114,13 +118,41 @@ console.log("------", gameIdVal);
   }
 
   const dataVal2={
-    "gameId": activeGame.game_id
+    "gameId": activeGame.game_id + ""
     }
 
   try {
     const response = await axios.post('https://u0ubbqcm00.execute-api.us-east-1.amazonaws.com/Dev/paticipants', dataVal2);
     console.log(response.data.value?.length);
     setParticipants(response.data.value?.length);
+
+    const joinTimesArray = response.data.value.map(item => item.JoinTime);
+
+    const earliestDate = joinTimesArray.reduce((minDate, currentDate) => {
+      const currentDateTime = new Date(currentDate);
+      return currentDateTime < minDate ? currentDateTime : minDate;
+    }, new Date(joinTimesArray[0]));
+
+    console.log("Earliest date:", earliestDate);
+
+
+
+    const differenceInMilliseconds = Math.abs(new Date() - earliestDate);
+    const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+
+    const remaining =  30 - differenceInMinutes;
+    const remainintime = Math.floor(remaining);
+    if(remaining < 1){
+      setFlagVal(true);
+      setTimeRemaining(0);
+    }
+    else{
+      setTimeRemaining(remainintime);
+    }
+
+
+
+
     
 } catch (error) {
     console.error('Error fetching data:', error);
