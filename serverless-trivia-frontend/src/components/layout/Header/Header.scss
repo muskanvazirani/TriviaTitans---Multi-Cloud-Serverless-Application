@@ -1,0 +1,16 @@
+$header-bg: rgb(4, 59, 114);
+$header-color: rgb(255, 255, 255);
+
+.header {
+  background-color: $header-bg;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-title {
+  color: $header-color;
+  font-size: 18px;
+  font-weight: bold;
+}

@@ -1,0 +1,40 @@
+$sidebar-bg: rgb(4, 59, 114);
+$sidebar-color: rgb(255, 255, 255);
+$border-color: #ccc;
+
+.sidebar {
+  background-color: $sidebar-bg;
+  width: 200px;
+  padding: 20px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-right: 1px solid $border-color;
+  
+}
+
+.sidebar__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar__item {
+  margin-bottom: 10px;
+}
+
+.sidebar__link {
+  color: $sidebar-color;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.sidebar__link:hover {
+  text-decoration: underline;
+}
+
+.sidebar__content {
+  margin-bottom: 20px;
+}

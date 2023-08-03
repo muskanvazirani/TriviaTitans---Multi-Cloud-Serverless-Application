@@ -1,19 +1,23 @@
+service: teamManagement
 
-service: team-management
-frameworkVersion: "3"
+frameworkVersion: '3'
 
-plugins:
-  - serverless-offline
+custom:
+  wsgi:
+    app: app.app
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: python3.9
+  iam:
+    role: arn:aws:iam::507485638797:role/LabRole
 
 functions:
-  hello:
-    handler: handlers/handler.hello
+  api:
+    handler: wsgi_handler.handler
     events:
-      - http:
-          path: hello-world
-          method: get
-          cors: true
+      - httpApi: '*'
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
