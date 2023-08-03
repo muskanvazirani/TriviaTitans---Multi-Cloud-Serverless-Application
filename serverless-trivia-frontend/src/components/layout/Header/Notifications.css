@@ -1,0 +1,42 @@
+.notifications {
+    background-color: #272829;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  border-radius: 10px;
+  position: fixed;
+  top: 20px;
+  right: 70px; /* Adjust the right position to control the distance from the bell icon */
+  z-index: 1;
+  text-align: left;
+}
+
+.bell-icon {
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.notifications .gameInvite {
+    color: #7A9D54;
+}
+
+.notifications .leaderBoard {
+    color: #9288F8;
+}
+
+.notifications .newGame {
+    color: #4682A9;
+}
+
+.notifications{
+    color: #FFF6E0;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    margin-left: 50px;
+    color: white;
+    border: solid 1px white;
+}
