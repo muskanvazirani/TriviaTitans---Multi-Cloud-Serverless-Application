@@ -91,15 +91,6 @@ function GameList() {
       ) : (
 
         <> 
-<div className="flex items-center justify-center ">
-            <div className="bg-white w-full sm:w-[640px] margin top mt-6 p-8 rounded-md shadow-sm border-[1px]">
-            <div className="font-bold text-3xl mb-4  mx-auto text-center">
-            <Link to="/leaderboard" className="text-blue-800 underline">
-                  LeaderBoard
-            </Link>
-            </div>
-        </div>
-        </div>
 <div>
       <h1 style={{ color: "rgb(4, 59, 114) " }}>Available Games</h1>
       <div className="filters">
