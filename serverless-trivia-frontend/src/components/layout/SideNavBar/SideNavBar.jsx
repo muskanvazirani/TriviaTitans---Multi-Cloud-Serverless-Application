@@ -18,6 +18,12 @@ const SideNavbar = () => {
             <li className="sidebar__item">
               <Link to="/user-profile" className="sidebar__link">User Profile</Link>
             </li>
+            <li className="sidebar__item">
+              <Link to="/gamelist" className="sidebar__link">Trivia Game Lobby</Link>
+            </li>
+            <li className="sidebar__item">
+              <Link to="/leaderboard" className="sidebar__link">Leader Board</Link>
+            </li>
           </ul>
         </nav>
       );

@@ -1,14 +1,10 @@
 {
-  "name": "team-management",
+  "name": "teamManagement",
   "version": "1.0.0",
-  "description": "",
-  "main": "handler.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Example of a Python Flask API service with traditional Serverless Framework",
   "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "serverless-offline": "^12.0.4"
+    "serverless-python-requirements": "^6.0.0",
+    "serverless-wsgi": "^3.0.1"
   }
 }
