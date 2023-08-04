@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Paper, Typography, Button, Grid, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { CheckCircleOutline, ErrorOutline } from '@mui/icons-material'; // Import icons
-import './InGameQuestions.scss'; // Assuming you have an SCSS file for this component
+import { CheckCircleOutline, ErrorOutline } from '@mui/icons-material';
+import './InGameQuestions.scss';
 
 const InGameQuestions = () => {
   const [questions, setQuestions] = useState([]);
   const [timer, setTimer] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
     // Fetch questions from session storage and parse JSON
@@ -38,6 +39,10 @@ const InGameQuestions = () => {
   const handleCloseResultDialog = () => {
     setSelectedAnswer(null);
     setShowResult(false);
+    if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
+        setTimer(20); // Reset timer
+      }
   };
 
   return (
@@ -55,14 +60,15 @@ const InGameQuestions = () => {
           </Typography>
         </div>
 
-        {questions.length > 0 && (
+        {questions.length > 0 && currentQuestionIndex < questions.length && (
           <>
-            <Typography variant="h5" className="question">
-              {questions[0].question}
+             <Typography variant="h5" className="question">
+             <span className='question-no'> Question {currentQuestionIndex + 1}: </span> 
+              <span className='question-description'> {questions[currentQuestionIndex].question} </span>
             </Typography>
 
             <Grid container spacing={2} className="options-container">
-              {questions[0].options.map((option, index) => (
+              {questions[currentQuestionIndex].options.map((option, index) => (
                 <Grid item xs={6} key={index}>
                   <Button
                     variant="outlined"
@@ -77,10 +83,9 @@ const InGameQuestions = () => {
             </Grid>
           </>
         )}
-
         <Dialog open={showResult} onClose={handleCloseResultDialog}>
           <DialogTitle>
-            {selectedAnswer === questions[0]?.correct_answer ? (
+            {selectedAnswer === questions[currentQuestionIndex]?.correct_answer ? (
               <Typography color="green">
                 <CheckCircleOutline fontSize="large" /> Correct Answer!
               </Typography>
@@ -92,11 +97,11 @@ const InGameQuestions = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {selectedAnswer === questions[0]?.correct_answer
+              {selectedAnswer === questions[currentQuestionIndex]?.correct_answer
                 ? 'Congratulations! You have earned a score.'
                 : timer === 0
-                ? `Sorry!! Times Up. The correct answer is: ${questions[0]?.correct_answer}`
-                : `Sorry!! The option you selected is wrong. The correct answer is: ${questions[0]?.correct_answer}`}
+                ? `Sorry!! Times Up. The correct answer is: ${questions[currentQuestionIndex]?.correct_answer}`
+                : `Sorry!! The option you selected is wrong. The correct answer is: ${questions[currentQuestionIndex]?.correct_answer}`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
