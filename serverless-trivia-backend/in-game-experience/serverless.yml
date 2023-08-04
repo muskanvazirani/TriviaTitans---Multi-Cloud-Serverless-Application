@@ -15,14 +15,21 @@ provider:
       Action:
         - 'sns:*'
         - 'sqs:*'
+        - 'dynamodb:*' 
       Resource: '*'
-  role: arn:aws:iam::<account-id>:role/LabRole
+  role: arn:aws:iam::694195453932:role/LabRole
 
 functions:
-  hello:
-    handler: handlers/index.hello
+  add-user:
+    handler: handlers/get-questions.handler
+    description: GET /game-questions
     events:
       - http:
-          path: hello-world
+          path: game-questions
           method: get
-          cors: true
+          cors:
+            origin: '*'
+          request:
+            parameters:
+              querystrings:
+                game_id: true
