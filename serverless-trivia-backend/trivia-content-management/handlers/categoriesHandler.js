@@ -2,9 +2,9 @@
 
 const AWS = require("aws-sdk");
 const db = new AWS.DynamoDB.DocumentClient();
-//tested
+
 // POST : create a category API
-//POST: https://api_gateway_url.com/categories
+//POST: https://api/categories
 // {
 //     "category": "Science",
 //     "description": "Questions about science"
@@ -22,8 +22,8 @@ module.exports.createCategory = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(params.Item),
     };
@@ -31,16 +31,15 @@ module.exports.createCategory = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(dbError),
     };
   }
 };
-//tested
 // PUT: updates description of category in API
-//PUT: https://api_gateway_url.com/categories
+//PUT: https://api/categories
 // {
 //     "category": "Science",
 //     "newDescription": "Questions about science and nature"
@@ -61,8 +60,8 @@ module.exports.updateCategory = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify({ category, description: newDescription }),
     };
@@ -70,16 +69,15 @@ module.exports.updateCategory = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(dbError),
     };
   }
 };
-//tested
 // DELETE the entire category
-//DELETE: https://api_gateway_url.com/categories
+//DELETE: https://api/categories
 // {
 //
 //     "category": "Science"
@@ -97,8 +95,8 @@ module.exports.deleteCategory = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify({ category }),
     };
@@ -106,8 +104,8 @@ module.exports.deleteCategory = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(dbError),
     };
@@ -115,22 +113,10 @@ module.exports.deleteCategory = async (event) => {
 };
 
 //get all categories API : fetch all the categories from the database.
-//GET: https://api_gateway_url.com/categories
+//GET: https://api/categories
 // {
 // }
 
-// module.exports.getAllCategories = async (event) => {
-//   const params = {
-//     TableName: process.env.CATEGORIES_TABLE,
-//   };
-
-//   try {
-//     const result = await db.scan(params).promise();
-//     return { statusCode: 200, body: JSON.stringify(result.Items) };
-//   } catch (dbError) {
-//     return { statusCode: 500, body: JSON.stringify(dbError) };
-//   }
-// };;
 module.exports.getAllCategories = async (event) => {
   const params = {
     TableName: process.env.CATEGORIES_TABLE,
@@ -144,8 +130,8 @@ module.exports.getAllCategories = async (event) => {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(result.Items),
     };
@@ -154,8 +140,8 @@ module.exports.getAllCategories = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-        "Access-Control-Allow-Credentials": true, // Required for cookies, authorization headers with HTTPS
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(dbError),
     };

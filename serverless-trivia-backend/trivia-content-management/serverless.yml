@@ -25,6 +25,7 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
+        - "s3:GetObject"
         - "dynamodb:PutItem"
         - "dynamodb:GetItem"
         - "dynamodb:UpdateItem"
@@ -39,6 +40,7 @@ provider:
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-games"
         - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-questions"
         - "arn:aws:dynamodb:us-east-1:468648691295:table/UsersTable"
+        - "arn:aws:s3:::firebas-geame-play/game-analysis-394811-a27dad77246d.json"
         - "*"
 
 resources:
@@ -78,7 +80,7 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: game_id
-            AttributeType: S
+            AttributeType: N
         KeySchema:
           - AttributeName: game_id
             KeyType: HASH
@@ -91,7 +93,7 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: game_id
-            AttributeType: S
+            AttributeType: N
           - AttributeName: question_id
             AttributeType: N
         KeySchema:
@@ -143,6 +145,13 @@ functions:
           cors: true
 
   # Questions API handlers
+  getAllQuestions:
+    handler: handlers/questionsHandler.getAllQuestions
+    events:
+      - http:
+          path: all-questions
+          method: get
+          cors: true
   getCategoryQuestions:
     handler: handlers/questionsHandler.getCategoryQuestions
     events:
@@ -157,6 +166,33 @@ functions:
           path: questions
           method: post
           cors: true
+    iamRoleStatements: # permissions for this function
+      - Effect: Allow
+        Action:
+          - "execute-api:Invoke" # allows the function to call API Gateway
+          - "dynamodb:PutItem" # allows the function to put items in DynamoDB
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "execute-api:Invoke" # allows the function to call API Gateway
+          - "dynamodb:GetItem" # allows the function to get items from DynamoDB
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "secretsmanager:GetSecretValue" # if you need to access secrets like API keys
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "logs:CreateLogGroup" # allows the function to create a new log group
+          - "logs:CreateLogStream" # allows the function to create a log stream within a log group
+          - "logs:PutLogEvents" # allows the function to put logs into a log stream
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "ec2:CreateNetworkInterface" # allows the function to create a network interface for outbound requests
+          - "ec2:DescribeNetworkInterfaces" # allows the function to get information about network interfaces
+          - "ec2:DeleteNetworkInterface" # allows the function to delete network interfaces when they're no longer needed
+        Resource: "*"
   updateQuestion:
     handler: handlers/questionsHandler.updateQuestion
     events:
@@ -171,6 +207,18 @@ functions:
           path: questions
           method: delete
           cors: true
+  getQuestionById:
+    handler: handlers/questionsHandler.getQuestionById
+    events:
+      - http:
+          path: questions/{category}/id/{question_id}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                category: true
+                question_id: true
 
   # Games API handlers -
   createGame:
@@ -225,10 +273,25 @@ functions:
     handler: handlers/gamesHandler.getGameDetailsByGameName
     events:
       - http:
-          path: games/{game_name}
+          path: games/name/{game_name}
           method: get
           cors: true
           request:
             parameters:
               paths:
                 game_name: true
+  getGameDetailsByGameId:
+    handler: handlers/gamesHandler.getGameDetailsByGameId
+    events:
+      - http:
+          path: games/id/{game_id}
+          method: get
+          cors: true
+  syncGameData:
+    handler: handlers/gamePlayAnalysis.syncGameData
+    timeout: 30
+    events:
+      - http:
+          path: syncGameData
+          method: post
+          cors: true
