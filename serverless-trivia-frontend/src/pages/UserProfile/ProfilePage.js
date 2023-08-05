@@ -18,8 +18,8 @@ const ProfilePage = () => {
 
     useEffect(() => {
         console.log('Fetching user data...');
-        /*const userId = localStorage.getItem("email");*/
-        fetchUserData(userId);
+        const userId2 = localStorage.getItem("email");
+        fetchUserData(userId2);
     }, [userId]);
 
     const handleUserSelectChange = (event) => {
@@ -94,7 +94,7 @@ const ProfilePage = () => {
 
     return (
         <div style={{ backgroundColor: 'white'}}>
-            <MUI.Box sx={{ padding: '10px' }}>
+            {/*<MUI.Box sx={{ padding: '10px' }}>
                 <MUI.Typography variant="h6">Select User:</MUI.Typography>
                 <MUI.Select
                     value={userId}
@@ -105,7 +105,7 @@ const ProfilePage = () => {
                     <MUI.MenuItem value="User2">User2</MUI.MenuItem>
                     <MUI.MenuItem value="User3">User3</MUI.MenuItem>
                 </MUI.Select>
-            </MUI.Box>
+            </MUI.Box>*/}
             <Box name="mainBox" sx={{display: 'flex',marginTop: '8px' }}>
                 <Grid container spacing={2} sx={{ gap: 1 }}>
                     <Grid name="grid1" item xs={12} sm={2} md={2} style={{ display: 'inline-block', justifyContent: 'center', maxWidth: '100%', width: '350px' }}>

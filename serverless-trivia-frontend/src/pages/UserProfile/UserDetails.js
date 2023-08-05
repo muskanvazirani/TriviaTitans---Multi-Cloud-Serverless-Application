@@ -51,6 +51,7 @@ const UserDetailsBox = ({ userId, username, setUsername, userEmail, setUserEmail
                         value={userEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
                         fullWidth
+                        disabled
                         sx={{ marginBottom: '10px' }}
                     />
                     <MUI.TextField

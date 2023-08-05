@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as MUI from '@mui/material';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import GroupsIcon from '@mui/icons-material/Groups';
 import axios from "axios";
 
 const ArticleBox = ({userId}) => {
@@ -37,6 +37,28 @@ const ArticleBox = ({userId}) => {
             console.log('Error fetching addon details:', error);
         }
     };
+
+    const handleExitTeam = async (teamId) => {
+        try {
+            const response = await axios.post(`YOUR_EXIT_TEAM_API_URL`, {
+                body: JSON.stringify({
+                    userId: userId,
+                    teamId: teamId
+                })
+            });
+
+            if (response.status === 200) {
+                // Refresh the team data after exiting the team
+                fetchUserStats(userId);
+            } else {
+                console.log('Failed to exit team');
+            }
+        } catch (error) {
+            console.error('Error exiting team:', error);
+            alert('Error exiting team.');
+        }
+    };
+
     return (
         <MUI.Card sx={{ marginBottom: '20px' }}>
             <MUI.CardContent>
@@ -51,7 +73,7 @@ const ArticleBox = ({userId}) => {
                     <MUI.Grid item xs={4}>
                         <MUI.Paper sx={{ padding: '10px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>
                             <MUI.Typography variant="h6">Win/Loss Ratio</MUI.Typography>
-                            <MUI.Typography variant="body1">{gameStat.gamesWon}:{gameStat.gamesLost}</MUI.Typography>
+                            <MUI.Typography variant="body1">{gameStat.gamesWon}/{gameStat.gamesLost}</MUI.Typography>
                         </MUI.Paper>
                     </MUI.Grid>
                     <MUI.Grid item xs={4}>
@@ -63,24 +85,29 @@ const ArticleBox = ({userId}) => {
                 </MUI.Grid>
 
                 <MUI.Typography variant="h5" sx={{ marginBottom: '20px' }}>Compare Achievements</MUI.Typography>
-                <MUI.List sx={{ marginBottom: '20px', textAlign: 'center' }}>
+                <div style={{ height: '200px', marginBottom: '20px', overflow: 'auto', boxShadow: '0px 0px 5px 0px rgba(0,0,0.2,0.2)', borderRadius: '10px' }}>
+                <MUI.List sx={{ marginBottom: '20px',marginLeft: '10px', textAlign: 'center' }}>
                     {achievements.map((achievement) => (
                         <MUI.ListItem key={achievement.userId} sx={{ padding: '5px 0', fontWeight: 'bold' }}>
                             <MUI.ListItemIcon>
-                                <CheckCircleOutlineIcon sx={{ fontSize: 20, color: 'green' }} />
+                                <StarBorderIcon sx={{ fontSize: 20, color: 'gold' }} />
                             </MUI.ListItemIcon>
                             <MUI.ListItemText primary={achievement.userId} secondary={`Rank: ${achievement.rank}, Highest Score: ${achievement.highestScore}, Win Streak: ${achievement.winStreak}`} />
                         </MUI.ListItem>
                     ))}
                 </MUI.List>
-                <MUI.Typography variant="h5" sx={{ marginBottom: '20px' }}>Current Team Members</MUI.Typography>
-                <MUI.List sx={{ marginBottom: '20px', textAlign: 'center' }}>
+                </div>
+                <MUI.Typography variant="h5" sx={{ marginBottom: '20px' }}>Current Team Affiliations</MUI.Typography>
+                <MUI.List sx={{ marginBottom: '20px',marginLeft: '10px', textAlign: 'center' }}>
                     {Object.values(currentTeam).map((team) => (
                         <MUI.ListItem key={team.team_name} sx={{ padding: '5px 0', fontWeight: 'bold' }}>
                             <MUI.ListItemIcon>
-                                <AccountCircleIcon sx={{ fontSize: 20 }} />
+                                <GroupsIcon sx={{ fontSize: 20, color: 'blue' }} />
                             </MUI.ListItemIcon>
                             <MUI.ListItemText primary={team.team_name} secondary={`Members: ${team.members.map((member) => member.user_id).join(', ')}`} />
+                            <MUI.Button variant="outlined" sx={{ color: 'red', borderColor: 'red' }} size="small" onClick={() => handleExitTeam(team.team_id)}>
+                                Exit Team
+                            </MUI.Button>
                         </MUI.ListItem>
                     ))}
                 </MUI.List>
