@@ -65,7 +65,7 @@ function App() {
             <Route path="/leaderboard" element={ <LeaderBoard /> } />
             <Route path="/lookerdata" element={ <LookerData /> } />
             <Route path="/profile" element={<ProfilePage />} />
-
+            <Route path="/game-over" element={<ProfilePage />}></Route>
           </Routes>
         </Layout>
       </BrowserRouter>
