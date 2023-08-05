@@ -34,9 +34,6 @@ function LoginRegister({ type = "LOGIN" }) {
   const authentication = async () => {
     try {
       if (type === "LOGIN") {
-        console.log('auth', auth);
-        console.log('email', email);
-        console.log('password', password)
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const {

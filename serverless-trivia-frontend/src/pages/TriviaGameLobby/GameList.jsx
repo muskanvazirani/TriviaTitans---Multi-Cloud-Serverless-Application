@@ -193,7 +193,7 @@ function GameList() {
 
                 <td style={{ textAlign: 'center', width: '10%'}}>
 
-                <button style={{ color: "green" }} onClick={() => handleJoin(item)}>View1</button>
+                <button style={{ color: "green" }} onClick={() => handleJoin(item)}>View</button>
 
                 </td>
 
