@@ -30,7 +30,8 @@ const ChatWindow = ({ onClose }) => {
                 if (response.status === 200) {
                     console.log('response.data:',response.data);
                     const botReply = response.data.body;
-                    const newBotMessage = { text: botReply, sender: 'bot' };
+                    const processedBotReply = botReply.replace(/\\n/g, '\n');
+                    const newBotMessage = { text: processedBotReply, sender: 'bot' };
                     setMessages((prevMessages) => [...prevMessages, newBotMessage]);
                     setTimeout(() => {
                         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -96,7 +97,13 @@ const ChatWindow = ({ onClose }) => {
             <span style={{ color: message.sender === 'bot' ? 'blue' : 'green' }}>
                 {message.sender === 'bot' ? 'Lex' : 'You'}
             </span>
-                        <span>{message.text}</span>
+                        {/*<span>{message.text.replace(/^"(.*)"$/, '$1')}</span>*/}
+                        {message.text
+                            .replace(/^"(.*)"$/, '$1')
+                            .split('\n')
+                            .map((line, lineIndex) => (
+                                <div key={lineIndex}>{line}</div>
+                            ))}
                     </div>
                 ))}
             </div>
