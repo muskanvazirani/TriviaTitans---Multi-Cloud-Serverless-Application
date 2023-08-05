@@ -90,7 +90,7 @@ console.log("------", activeGame);
 
     //const {email} = JSON.parse(window.sesssionStorage.getItem("user-details"));
     // Check if user details exist in session storage
-   
+    sessionStorage.setItem("game_id", gameIdVal + "")
     console.log(gameIdVal);
     console.log("------------");
     const dataVal={
