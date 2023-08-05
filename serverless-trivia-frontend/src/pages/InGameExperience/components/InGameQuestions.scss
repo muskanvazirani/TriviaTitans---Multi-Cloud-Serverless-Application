@@ -48,6 +48,11 @@
       button {
         margin: 5px;
       }
+
+      .selected-option {
+        background-color: blue; // Apply blue background to selected option
+        color: white;
+      }
     }
   }
 
@@ -57,4 +62,11 @@
   
   .question-description {
     color: cornflowerblue;
+  }
+
+  .selected-answer {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: blue;
   }

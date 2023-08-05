@@ -6,7 +6,8 @@ import {
     onSnapshot,
     limit,
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    where
 } from 'firebase/firestore';
 import { auth, db } from '../../../firebase-config';
 import {
@@ -51,7 +52,7 @@ const UserChat = () => {
             text: newMessage,
             createdAt: serverTimestamp(),
             user: auth.currentUser.displayName,
-            room: sessionStorage.getItem('game_played_id'),
+            room: sessionStorage.getItem('game_id'),
             uid,
             displayName,
             photoURL

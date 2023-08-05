@@ -12,7 +12,7 @@ const UserAuthentication = () => {
 
   const userSignIn = async () => {
      await signInWithGoogle();
-     navigate('/in-game-experience')
+     navigate('/profile')
   }
 
   return (

@@ -72,7 +72,7 @@ function LoginRegister({ type = "LOGIN" }) {
     }
     sessionStorage.setItem("user-details", JSON.stringify({userName, email}))
     // login successful: go to next page
-    navigate("/gameDetails");
+    navigate("/profile");
   };
 
   const twoFactorAuthDialog = () => {

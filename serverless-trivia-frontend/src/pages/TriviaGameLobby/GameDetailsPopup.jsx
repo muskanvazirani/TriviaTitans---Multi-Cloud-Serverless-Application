@@ -90,7 +90,7 @@ console.log("------", activeGame);
 
     //const {email} = JSON.parse(window.sesssionStorage.getItem("user-details"));
     // Check if user details exist in session storage
-    sessionStorage.setItem("game_id", gameIdVal + "")
+    sessionStorage.setItem("game_id", gameIdVal)
     console.log(gameIdVal);
     console.log("------------");
     const dataVal={
@@ -150,7 +150,7 @@ console.log("------", activeGame);
       setTimeRemaining(remainintime);
     }
 
-
+    navigate('/in-game-experience');
 
 
     
@@ -197,7 +197,7 @@ console.log("------", activeGame);
 
         <p>Time Remaining: {timeremaining}</p>
 
-        <button disabled={flagval} style={{ color: "green" }} onClick={() => handleJoin()}>Join</button>
+        <button  style={{ color: "green" }} onClick={() => handleJoin()}>Join</button>
 
         <Link to="/gamelist" className="btn btn-primary">
 
