@@ -4,8 +4,17 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { signInWithGoogle } from "../../firebase-config";
+import { useNavigate } from "react-router-dom";
+
 
 const UserAuthentication = () => {
+  const navigate = useNavigate();
+
+  const userSignIn = async () => {
+     await signInWithGoogle();
+     navigate('/in-game-experience')
+  }
+
   return (
     <div>
       <Box sx={{ margin: "2rem 0" }}>
@@ -48,7 +57,7 @@ const UserAuthentication = () => {
             sx={{
               width: "20%",
             }}
-            onClick={signInWithGoogle}
+            onClick={userSignIn}
           >
             <Typography
               variant="caption"

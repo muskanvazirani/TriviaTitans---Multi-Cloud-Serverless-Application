@@ -42,6 +42,7 @@ function LoginRegister({ type = "LOGIN" }) {
         const {
           user: { displayName, email: userEmail },
         } = await createUserWithEmailAndPassword(auth, email, password);
+        console.log('heree', displayName);
         setUserName(displayName || userEmail);
       }
     } catch (error) {
@@ -71,7 +72,7 @@ function LoginRegister({ type = "LOGIN" }) {
     }
     sessionStorage.setItem("user-details", JSON.stringify({userName, email}))
     // login successful: go to next page
-    navigate("/in-game-experience");
+    navigate("/gameDetails");
   };
 
   const twoFactorAuthDialog = () => {

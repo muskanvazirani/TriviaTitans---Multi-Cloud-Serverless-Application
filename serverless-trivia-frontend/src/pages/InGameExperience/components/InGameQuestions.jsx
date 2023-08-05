@@ -85,7 +85,7 @@ const InGameQuestions = () => {
   };
 
   return (
-    <div className="quiz-container">
+    <div className="">
       <Paper elevation={3} className="question-container">
         <div className="timer-container">
           <CircularProgress
