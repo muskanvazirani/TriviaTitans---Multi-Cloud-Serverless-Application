@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Typography, Button, Grid, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { CheckCircleOutline, ErrorOutline } from '@mui/icons-material';
 import './InGameQuestions.scss';
+import { storeUserScore } from '../../../services/in-game-experience/store-user-score';
+import { getGameDetails } from '../../../services/in-game-experience/get-game-details';
+import { storeTeamScore } from '../../../services/in-game-experience/store-team-score';
 
 const InGameQuestions = () => {
   const [questions, setQuestions] = useState([]);
@@ -9,10 +12,11 @@ const InGameQuestions = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
+  
   useEffect(() => {
     // Fetch questions from session storage and parse JSON
     const storedQuestions = sessionStorage.getItem('questions-data');
+
     if (storedQuestions) {
       setQuestions(JSON.parse(storedQuestions));
     }
@@ -36,13 +40,48 @@ const InGameQuestions = () => {
     setShowResult(true);
   };
 
-  const handleCloseResultDialog = () => {
+  const handleCloseResultDialog = async () => {
     setSelectedAnswer(null);
     setShowResult(false);
+    // Update user score
+  const currentQuestion = questions[currentQuestionIndex];
+  const isCorrectAnswer = selectedAnswer === currentQuestion.correct_answer;
+  const userScore = isCorrectAnswer ? 10 : 0;
+
+  const userData = {
+    game_played_id: sessionStorage.getItem("game_played_id"),
+    game_id: sessionStorage.getItem('game_id'),
+    user_id: JSON.parse(sessionStorage.getItem('user-details')).email,
+    question_id: currentQuestion.id,
+    score: userScore,
+  };
+
+  try {
+    await storeUserScore(userData);
     if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
         setTimer(20); // Reset timer
       }
+
+      if(currentQuestionIndex === questions.length - 1) {
+        console.log('qeustion over');
+        // udpate the team score here
+        const gameDetails = await getGameDetails(sessionStorage.getItem("game_id"));
+        await storeTeamScore({
+            game_played_id: sessionStorage.getItem('game_played_id'),
+            game_id: sessionStorage.getItem('game_id'),
+            game_name: gameDetails.game_name,
+            team_id: JSON.parse(sessionStorage.getItem('user-details')).team_id,
+            score: 10,
+            start_time: gameDetails.start_time,
+            category: gameDetails.Category,
+          })
+
+      }
+
+  } catch (error) {
+    console.error('Error storing user score:', error);
+  }
   };
 
   return (
