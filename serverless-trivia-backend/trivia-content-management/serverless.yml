@@ -6,15 +6,105 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-east-1
+  # region: us-east-1
+  # stage: dev
+  # iamRoleStatements:
+  #   - Effect: 'Allow'
+  #     Action:
+  #       - 'sns:*'
+  #       - 'sqs:*'
+  #     Resource: '*'
+  # role: arn:aws:iam::<account-id>:role/LabRole
   stage: dev
+  region: us-east-1
+  environment:
+    CATEGORIES_TABLE: ${self:service}-${self:provider.stage}-categories
+    QUESTIONS_TABLE: ${self:service}-${self:provider.stage}-questions
+    GAMES_TABLE: ${self:service}-${self:provider.stage}-games
+    GAMEQUESTIONS_TABLE: ${self:service}-${self:provider.stage}-gamequestions
   iamRoleStatements:
-    - Effect: 'Allow'
+    - Effect: "Allow"
       Action:
-        - 'sns:*'
-        - 'sqs:*'
-      Resource: '*'
-  role: arn:aws:iam::<account-id>:role/LabRole
+        - "s3:GetObject"
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+        - "sns:*"
+        - "sqs:*"
+      Resource:
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-categories"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-gamequestions"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-games"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/${self:service}-${self:provider.stage}-questions"
+        - "arn:aws:dynamodb:us-east-1:468648691295:table/UsersTable"
+        - "arn:aws:s3:::firebas-geame-play/game-analysis-394811-a27dad77246d.json"
+        - "*"
+
+resources:
+  Resources:
+    CategoriesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: category
+            AttributeType: S
+        KeySchema:
+          - AttributeName: category
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+    QuestionsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: N
+          - AttributeName: category
+            AttributeType: S
+        KeySchema:
+          - AttributeName: category
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.QUESTIONS_TABLE}
+    GamesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: game_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: game_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.GAMES_TABLE}
+    GameQuestionsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: game_id
+            AttributeType: N
+          - AttributeName: question_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: game_id
+            KeyType: HASH
+          - AttributeName: question_id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.GAMEQUESTIONS_TABLE}
 
 functions:
   hello:
@@ -23,4 +113,185 @@ functions:
       - http:
           path: hello-world
           method: get
+          cors: true
+  # Categories API handlers
+  getAllCategories:
+    handler: handlers/categoriesHandler.getAllCategories
+    events:
+      - http:
+          path: categories
+          method: get
+          cors: true
+  createCategory:
+    handler: handlers/categoriesHandler.createCategory
+    events:
+      - http:
+          path: categories
+          method: post
+          cors: true
+  updateCategory:
+    handler: handlers/categoriesHandler.updateCategory
+    events:
+      - http:
+          path: categories
+          method: put
+          cors: true
+  deleteCategory:
+    handler: handlers/categoriesHandler.deleteCategory
+    events:
+      - http:
+          path: categories
+          method: delete
+          cors: true
+
+  # Questions API handlers
+  getAllQuestions:
+    handler: handlers/questionsHandler.getAllQuestions
+    events:
+      - http:
+          path: all-questions
+          method: get
+          cors: true
+  getCategoryQuestions:
+    handler: handlers/questionsHandler.getCategoryQuestions
+    events:
+      - http:
+          path: categories/{category}
+          method: get
+          cors: true
+  createQuestion:
+    handler: handlers/questionsHandler.createQuestion
+    events:
+      - http:
+          path: questions
+          method: post
+          cors: true
+    iamRoleStatements: # permissions for this function
+      - Effect: Allow
+        Action:
+          - "execute-api:Invoke" # allows the function to call API Gateway
+          - "dynamodb:PutItem" # allows the function to put items in DynamoDB
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "execute-api:Invoke" # allows the function to call API Gateway
+          - "dynamodb:GetItem" # allows the function to get items from DynamoDB
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "secretsmanager:GetSecretValue" # if you need to access secrets like API keys
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "logs:CreateLogGroup" # allows the function to create a new log group
+          - "logs:CreateLogStream" # allows the function to create a log stream within a log group
+          - "logs:PutLogEvents" # allows the function to put logs into a log stream
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - "ec2:CreateNetworkInterface" # allows the function to create a network interface for outbound requests
+          - "ec2:DescribeNetworkInterfaces" # allows the function to get information about network interfaces
+          - "ec2:DeleteNetworkInterface" # allows the function to delete network interfaces when they're no longer needed
+        Resource: "*"
+  updateQuestion:
+    handler: handlers/questionsHandler.updateQuestion
+    events:
+      - http:
+          path: questions
+          method: put
+          cors: true
+  deleteQuestion:
+    handler: handlers/questionsHandler.deleteQuestion
+    events:
+      - http:
+          path: questions
+          method: delete
+          cors: true
+  getQuestionById:
+    handler: handlers/questionsHandler.getQuestionById
+    events:
+      - http:
+          path: questions/{category}/id/{question_id}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                category: true
+                question_id: true
+
+  # Games API handlers -
+  createGame:
+    handler: handlers/gamesHandler.createGame
+    events:
+      - http:
+          path: games
+          method: post
+          cors: true
+  getGameDetails:
+    handler: handlers/gamesHandler.getGameDetails
+    events:
+      - http:
+          path: games
+          method: get
+          cors: true
+  updateGame:
+    handler: handlers/gamesHandler.updateGame
+    events:
+      - http:
+          path: games
+          method: put
+          cors: true
+  deleteGame:
+    handler: handlers/gamesHandler.deleteGame
+    events:
+      - http:
+          path: games
+          method: delete
+          cors: true
+  notifyUsers:
+    handler: handlers/notifyUsers.handler
+    events:
+      - sns:
+          arn:
+            Fn::Join:
+              - ""
+              - - "arn:aws:sns:"
+                - Ref: "AWS::Region"
+                - ":"
+                - Ref: "AWS::AccountId"
+                - ":New-Game-Update"
+          topicName: New-Game-Update
+  getQuesByCatAndDiff:
+    handler: handlers/gamesHandler.getQuesByCatAndDiff
+    events:
+      - http:
+          path: questions/{category}/{difficulty}
+          method: get
+          cors: true
+  getGameDetailsByGameName:
+    handler: handlers/gamesHandler.getGameDetailsByGameName
+    events:
+      - http:
+          path: games/name/{game_name}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                game_name: true
+  getGameDetailsByGameId:
+    handler: handlers/gamesHandler.getGameDetailsByGameId
+    events:
+      - http:
+          path: games/id/{game_id}
+          method: get
+          cors: true
+  syncGameData:
+    handler: handlers/gamePlayAnalysis.syncGameData
+    timeout: 30
+    events:
+      - http:
+          path: syncGameData
+          method: post
           cors: true
