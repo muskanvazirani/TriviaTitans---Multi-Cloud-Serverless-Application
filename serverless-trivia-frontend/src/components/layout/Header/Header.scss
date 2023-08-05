@@ -14,3 +14,13 @@ $header-color: rgb(255, 255, 255);
   font-size: 18px;
   font-weight: bold;
 }
+
+.header-left {
+  display: flex;
+  align-items: center;
+  padding-left: 20px; /* Adjust as needed */
+}
+
+.menu-button {
+  margin-right: 200px; /* Adjust the margin as needed */
+}
