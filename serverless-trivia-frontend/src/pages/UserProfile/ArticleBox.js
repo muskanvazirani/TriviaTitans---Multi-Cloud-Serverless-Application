@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as MUI from '@mui/material';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GroupsIcon from '@mui/icons-material/Groups';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from "axios";
 
 const ArticleBox = ({userId}) => {
