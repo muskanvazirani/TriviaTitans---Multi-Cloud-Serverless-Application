@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Header.scss';
 import './Notifications.css';
 
-function Header() {
+function Header({ toggleSideNav }) {
       const [notifications, setNotifications] = useState(() => {
         const savedNotifications = localStorage.getItem('notifications');
         if (savedNotifications) {
@@ -39,9 +39,22 @@ function Header() {
         newNotifications.splice(index, 1);
         setNotifications(newNotifications);
     };
+
+    const buttonStyle = {
+        background: 'none',
+        border: 'none',
+        color: 'white',
+        fontSize: '20px',
+        cursor: 'pointer',
+        padding: '20px',
+    };
+
     return (
       <header className="header">
-        <h1 className="header-title">Serverless Trivia Game</h1>
+          <div style={{ display: 'flex', alignItems: 'left' }}>
+              <button onClick={toggleSideNav} style={buttonStyle}>Menu</button>
+          </div>
+          <h1 style={{ margin: '0 auto', color: 'white' }}>Serverless Trivia Game</h1>
         <div className="bell-icon" onClick={handleBellClick}>
                 <span role="img" aria-label="bell">&#x1F514;</span>
                 {display &&

@@ -6,11 +6,12 @@ $border-color: #ccc;
   background-color: $sidebar-bg;
   width: 200px;
   padding: 20px;
-  height: 100vh;
+  height: 20vh;
   position: fixed;
   top: 0;
   left: 0;
   border-right: 1px solid $border-color;
+  margin-top: 60px;
   
 }
 

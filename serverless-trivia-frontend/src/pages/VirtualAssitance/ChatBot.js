@@ -29,7 +29,7 @@ const Chatbot = () => {
                     }}
                     onClick={toggleChat}
                 >
-                    <ChatIcon style={{ fontSize: '40px', color: '#007bff' }} />
+                    <ChatIcon style={{ fontSize: '60px', color: '#007bff' }} />
                 </div>
             )}
         </div>
