@@ -23,7 +23,8 @@ import GameList from "./pages/TriviaGameLobby/GameList";
 import GameDetailsPopup from "./pages/TriviaGameLobby/GameDetailsPopup";
 import LeaderBoard from "./pages/LeaderBoard/LeaderBoard";
 import LookerData from "./pages/LeaderBoard/LookerData";
-
+import ProfilePage from "./pages/UserProfile/ProfilePage";
+import Chatbot from "./pages/VirtualAssitance/ChatBot";
 
 function App() {
   return (
@@ -63,10 +64,12 @@ function App() {
             <Route path="/gamedetails" element={ <GameDetailsPopup /> } />
             <Route path="/leaderboard" element={ <LeaderBoard /> } />
             <Route path="/lookerdata" element={ <LookerData /> } />
+            <Route path="/profile" element={<ProfilePage />} />
 
           </Routes>
         </Layout>
       </BrowserRouter>
+      <Chatbot />
     </div>
   );
 }

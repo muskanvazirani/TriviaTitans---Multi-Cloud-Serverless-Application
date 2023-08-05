@@ -16,7 +16,7 @@ const SideNavbar = () => {
               <Link to="/manage-team" className="sidebar__link">Team</Link>
             </li>
             <li className="sidebar__item">
-              <Link to="/user-profile" className="sidebar__link">User Profile</Link>
+              <Link to="/profile" className="sidebar__link">User Profile</Link>
             </li>
             <li className="sidebar__item">
               <Link to="/gamelist" className="sidebar__link">Trivia Game Lobby</Link>
