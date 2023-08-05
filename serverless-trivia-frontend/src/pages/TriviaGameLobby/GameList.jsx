@@ -91,7 +91,6 @@ function GameList() {
       ) : (
 
         <> 
-
 <div>
       <h1 style={{ color: "rgb(4, 59, 114) " }}>Available Games</h1>
       <div className="filters">
