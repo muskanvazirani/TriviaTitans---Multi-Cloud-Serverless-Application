@@ -10,11 +10,10 @@ const ArticleBox = ({userId}) => {
     const [gameStat, setGameStat] = useState({});
     const [currentTeam, setCurrentTeam] = useState([]);
 
-    /*const userId = localStorage.getItem("userId");*/
     console.log('Article user id:',userId);
-        useEffect(() => {
+    useEffect(() => {
         // Fetch data from the Lambda API endpoint for "lambda1"
-            fetchUserStats();
+        fetchUserStats();
     }, []);
 
     const fetchUserStats = async (selectedUserId) => {
@@ -40,7 +39,8 @@ const ArticleBox = ({userId}) => {
 
     const handleExitTeam = async (teamId) => {
         try {
-            const response = await axios.post(`YOUR_EXIT_TEAM_API_URL`, {
+            console.log('Existing team');
+            const response = await axios.post(`https://tuupoe7l0i.execute-api.us-east-1.amazonaws.com/serverlessDev/exitteam`, {
                 body: JSON.stringify({
                     userId: userId,
                     teamId: teamId
@@ -48,7 +48,7 @@ const ArticleBox = ({userId}) => {
             });
 
             if (response.status === 200) {
-                // Refresh the team data after exiting the team
+                alert('You have successfully existed the team');
                 fetchUserStats(userId);
             } else {
                 console.log('Failed to exit team');
@@ -86,16 +86,16 @@ const ArticleBox = ({userId}) => {
 
                 <MUI.Typography variant="h5" sx={{ marginBottom: '20px' }}>Compare Achievements</MUI.Typography>
                 <div style={{ height: '200px', marginBottom: '20px', overflow: 'auto', boxShadow: '0px 0px 5px 0px rgba(0,0,0.2,0.2)', borderRadius: '10px' }}>
-                <MUI.List sx={{ marginBottom: '20px',marginLeft: '10px', textAlign: 'center' }}>
-                    {achievements.map((achievement) => (
-                        <MUI.ListItem key={achievement.userId} sx={{ padding: '5px 0', fontWeight: 'bold' }}>
-                            <MUI.ListItemIcon>
-                                <StarBorderIcon sx={{ fontSize: 20, color: 'gold' }} />
-                            </MUI.ListItemIcon>
-                            <MUI.ListItemText primary={achievement.userId} secondary={`Rank: ${achievement.rank}, Highest Score: ${achievement.highestScore}, Win Streak: ${achievement.winStreak}`} />
-                        </MUI.ListItem>
-                    ))}
-                </MUI.List>
+                    <MUI.List sx={{ marginBottom: '20px',marginLeft: '10px', textAlign: 'center' }}>
+                        {achievements.map((achievement) => (
+                            <MUI.ListItem key={achievement.userId} sx={{ padding: '5px 0', fontWeight: 'bold' }}>
+                                <MUI.ListItemIcon>
+                                    <StarBorderIcon sx={{ fontSize: 20, color: 'gold' }} />
+                                </MUI.ListItemIcon>
+                                <MUI.ListItemText primary={achievement.userId} secondary={`Games Played: ${achievement.gamesPlayed}, Games Won: ${achievement.gamesWon}, Games Lost: ${achievement.gamesLost}`} />
+                            </MUI.ListItem>
+                        ))}
+                    </MUI.List>
                 </div>
                 <MUI.Typography variant="h5" sx={{ marginBottom: '20px' }}>Current Team Affiliations</MUI.Typography>
                 <MUI.List sx={{ marginBottom: '20px',marginLeft: '10px', textAlign: 'center' }}>

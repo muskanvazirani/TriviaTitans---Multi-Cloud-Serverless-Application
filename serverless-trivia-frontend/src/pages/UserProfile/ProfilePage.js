@@ -13,20 +13,21 @@ const ProfilePage = () => {
     const [userEmail, setUserEmail] = useState('');
     const [userLocation, setUserLocation] = useState('');
     const [userDateOfBirth, setUserDateOfBirth] = useState('');
-    const [userId, setUserId] = useState('User1');//this is temp code
     const [articleBoxKey, setArticleBoxKey] = useState(0); //temp code
+    const userId = localStorage.getItem("email");
 
     useEffect(() => {
         console.log('Fetching user data...');
-        const userId2 = localStorage.getItem("email");
-        fetchUserData(userId2);
+        fetchUserData(userId);
     }, [userId]);
 
     const handleUserSelectChange = (event) => {
+
         const selectedUserId = event.target.value;
-        setUserId(selectedUserId); // Update the state with selected user ID
-        fetchUserData(selectedUserId);
-        setArticleBoxKey(articleBoxKey + 1);
+        /* Temp code before integration.
+        setUserId(selectedUserId);*/
+        /*fetchUserData(selectedUserId);*/
+
     };
 
     const fetchUserData = async (selectedUserId) => {
@@ -46,6 +47,7 @@ const ProfilePage = () => {
                 setUserEmail(email);
                 setUserLocation(location);
                 setUserDateOfBirth(dateOfBirth);
+                setArticleBoxKey(articleBoxKey + 1);
             }
         } catch (error) {
             console.log('Error fetching addon details:', error);
