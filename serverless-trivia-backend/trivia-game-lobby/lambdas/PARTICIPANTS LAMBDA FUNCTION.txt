@@ -1,0 +1,29 @@
+PARTICIPANTS LAMBDA FUNCTION
+
+
+const AWS = require('aws-sdk');
+const docClient = new AWS.DynamoDB.DocumentClient();
+
+exports.handler = async (event) => {
+  const { gameId } = event;
+   const params = {
+    TableName: 'JoinedGame' // Replace 'your-table-name' with the name of your DynamoDB table
+  };
+
+  try {
+    const result = await docClient.scan(params).promise();
+    const allData =  result.Items;
+
+    console.log('All data:', allData);
+    const filteredArray = allData.filter(item => item.GameId === gameId);
+    return {
+      statusCode: 200,
+      body: 'Games and Users retrieved successfully',
+      value: filteredArray
+    };
+  
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+    return [];
+  }
+};
