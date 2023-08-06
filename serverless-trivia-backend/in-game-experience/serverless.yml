@@ -15,14 +15,96 @@ provider:
       Action:
         - 'sns:*'
         - 'sqs:*'
+        - 'dynamodb:*' 
       Resource: '*'
-  role: arn:aws:iam::<account-id>:role/LabRole
+  role: arn:aws:iam::694195453932:role/LabRole
 
 functions:
-  hello:
-    handler: handlers/index.hello
+  get-game-questions:
+    handler: handlers/get-questions.handler
+    description: GET /game-questions
     events:
       - http:
-          path: hello-world
+          path: game-questions
           method: get
-          cors: true
+          cors:
+            origin: '*'
+          request:
+            parameters:
+              querystrings:
+                game_id: true
+  get-game-details:
+    handler: handlers/get-game-details.handler
+    description: GET /get-game-details
+    events:
+      - http:
+          path: get-game-details
+          method: get
+          cors:
+            origin: '*'
+          request:
+            parameters:
+              querystrings:
+                game_id: true
+  get-user-score:
+    handler: handlers/get-user-score.handler
+    description: GET /get-user-score
+    events:
+      - http:
+          path: get-user-score
+          method: get
+          cors:
+            origin: '*'
+          request:
+            parameters:
+              querystrings:
+                user_id: true
+  store-user-score:
+    handler: handlers/store-user-score.handler
+    description: POST /store-user-score
+    events:
+      - http:
+          path: store-user-score
+          method: post
+          cors:
+            origin: '*'
+  store-team-score:
+    handler: handlers/store-team-score.handler
+    description: POST /store-team-score
+    events:
+      - http:
+          path: store-team-score
+          method: post
+          cors:
+            origin: '*'
+
+resources:
+  Resources:
+    GamePlayedUserTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: GamePlayedUserTable
+        AttributeDefinitions:
+          - AttributeName: game_played_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: game_played_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+    GamePlayedTeamTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: GamePlayedTeamTable
+        AttributeDefinitions:
+          - AttributeName: game_played_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: game_played_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5

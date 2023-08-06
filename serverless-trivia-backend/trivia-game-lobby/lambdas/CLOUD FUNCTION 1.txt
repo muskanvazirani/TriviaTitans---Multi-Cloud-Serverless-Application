@@ -1,0 +1,38 @@
+CLOUD FUNCTION 1
+
+const { Firestore } = require('@google-cloud/firestore');
+const axios = require('axios');
+
+const firestore = new Firestore();
+exports.TriviaGameData = async (req, res) => {
+  try {
+    const lambdaResponse = await axios.get('https://u0ubbqcm00.execute-api.us-east-1.amazonaws.com/Dev/triviagamedata');
+    await deleteAllFirestoreData();
+    const collectionRef = firestore.collection('TriviaGameData');
+    const data = lambdaResponse.data.value;
+    console.log("Data: ", data);
+    await Promise.all(data.map(async (item) => {
+      await collectionRef.add(item);
+    }));
+    res.status(200).send('Data stored in Firestore successfully.');
+  } catch (error) {
+    console.error('Error calling Lambda and storing data:', error);
+    res.status(500).send('An error occurred.');
+  }
+};
+
+ 
+
+async function deleteAllFirestoreData() {
+  const collectionRef = firestore.collection('TriviaGameData');
+
+  const querySnapshot = await collectionRef.get();
+
+  const batch = firestore.batch();
+
+  querySnapshot.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+}

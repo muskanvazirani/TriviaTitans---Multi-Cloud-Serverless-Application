@@ -1,0 +1,72 @@
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 70px; /* Space for header */
+    height: 100vh;
+  }
+  
+  .question-container {
+    width: 80%;
+    max-width: 800px; /* Adjust the maximum width as needed */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 20px; /* Add margin from the top */
+  
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+  
+      .timer {
+        color: #4caf50;
+        margin-bottom: 10px;
+      }
+  
+      .timer-text {
+        font-weight: bold;
+        font-size: 36px;
+      }
+    }
+  
+    .question {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  
+    .options-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+  
+      button {
+        margin: 5px;
+      }
+
+      .selected-option {
+        background-color: blue; // Apply blue background to selected option
+        color: white;
+      }
+    }
+  }
+
+  .question-no {
+    color: #4caf50;
+  } 
+  
+  .question-description {
+    color: cornflowerblue;
+  }
+
+  .selected-answer {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: blue;
+  }
